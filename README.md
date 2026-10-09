@@ -116,7 +116,7 @@ neto-io-backend/
 
 1. **Clone o repositório:**
    ```bash
-   git clone https://github.com/usuario/neto-io-backend.git
+   git clone https://github.com/viniciusveraz/neto-io-backend.git
    cd neto-io-backend
    ```
 
