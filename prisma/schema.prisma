@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("USER") // USER | ADMIN
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reviews Review[]
+
+  @@map("users")
+}
+
+model Category {
+  id          String        @id @default(cuid())
+  name        String        @unique
+  slug        String        @unique
+  description String?
+  icon        String?
+  createdAt   DateTime      @default(now())
+  spots       TouristSpot[]
+
+  @@map("categories")
+}
+
+model TouristSpot {
+  id               String   @id @default(cuid())
+  name             String
+  slug             String   @unique
+  description      String
+  city             String // Barra Grande, Luís Correia, Parnaíba, Ilha Grande, Cajueiro da Praia
+  address          String?
+  latitude         Float?
+  longitude        Float?
+  imageUrl         String?
+  additionalImages String? // URLs separadas por vírgula ou JSON
+  isFeatured       Boolean  @default(false)
+  kitesurfSpot     Boolean  @default(false)
+  contactPhone     String?
+  instagram        String?
+  website          String?
+  categoryId       String
+  category         Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  reviews Review[]
+
+  @@map("tourist_spots")
+}
+
+model Review {
+  id            String      @id @default(cuid())
+  rating        Int // 1 a 5
+  comment       String
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  touristSpotId String
+  touristSpot   TouristSpot @relation(fields: [touristSpotId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@map("reviews")
+}
